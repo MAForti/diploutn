@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+</head>
+<body>
+<script>
+// Metodos Constructores
+function Persona() {
+
+  // Atributos privados
+  this.nombre = "";
+  this.apellido = "";
+  this.edad = 0;
+  this.fechaNacimiento = "";
+
+  // Metodos
+  this.saludar = function() {
+    return this.nombre + " " + this.apellido;
+  };
+
+  // Getters y Setters
+  this.getNombre = function() {
+    return this.nombre;
+  };
+
+  this.setNombre = function(n) {
+    this.nombre = n;
+  };
+
+  this.getApellido = function() {
+    return this.apellido;
+  };
+
+  this.setApellido = function(n) {
+    this.apellido = n;
+  };
+
+  this.getNombreCompleto = function() {
+    return this.nombre + " " + this.apellido;
+  };
+  
+  this.getEdad = function() {
+
+  };
+}
+
+var persona1 = new Persona();
+persona1.setNombre("Matias");
+var persona2 = new Persona();
+</script>
+</body>
+</html>

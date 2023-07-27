@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+</head>
+<body>
+<script>
+// Metodos Constructores
+function Persona(nombre, apellido) {
+
+  // Atributos
+  this.nombre = nombre;
+  this.apellido = apellido;
+  this.edad = 0;
+
+  // Metodos
+  this.saludar = function() {
+    return this.nombre + " " + this.apellido;
+  }
+}
+/*
+var Persona = {
+  nombre: "",
+  apellido: ""
+}
+*/
+
+// Instanciar (crear un objeto) -> new
+
+var persona1 = new Persona("Matias", "Basile");
+persona1.edad = 15;
+persona1.miOtroMetodo = function() {
+  console.log("Mi Otro Metodo")
+}
+var persona2 = new Persona("Mauro", "Forti");
+
+var personas = [];
+personas.push(persona1);
+personas.push(persona2);
+
+for(var i=0; i < personas.length; i++) {
+  let per = personas[i];
+  console.log(per.saludar());
+}
+
+
+</script>
+</body>
+</html>

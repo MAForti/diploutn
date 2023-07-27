@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+</head>
+<body>
+<script>
+var usuario = {
+  email: "", 
+  password: "",
+
+  // Devuelve true si es correcto, false en caso contrario
+  validar: function() {
+    if (this.email == "") return false;
+    if (this.password == "") return false;
+    return true;
+  },
+
+  login: function() {
+    // Llamar API 
+  }
+};
+
+usuario.login();
+</script>
+</body>
+</html>
