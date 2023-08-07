@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <link rel="stylesheet" type="text/css" href="assets/boostrap/css/bootstrap.css">
+  <script src="assets/jquery.js"></script>
+  <script src="assets/boostrap/js/bootstrap.js"></script>
+<style>
+  td {
+    border-style: solid;
+  }
+</style>
+</head>
+<body>
+  <table class="table table-bordered">
+    <tr>
+      <td id="1"></td>
+      <td id="2"></td>
+      <td id="3"></td>
+    </tr>
+    <tr>
+      <td id="4"></td>
+      <td id="5"></td>
+      <td id="6"></td>
+    </tr>
+    <tr>
+      <td id="7"></td>
+      <td id="8"></td>
+      <td id="9"></td>
+    </tr>
+  </table>
+</body>
+</html>
+<script>
+  var array = ["O","X","O","X","O","X","O","X","O"];
+  $("td").click(function(){
+    if ($(this).html() == "O" || $(this).html() == "X") {
+      
+    } else { 
+      $(this).append(array.pop());
+      pregunta();
+      console.log(array);
+    }
+  });
+
+  function pregunta() {
+    var triunfo = 0;
+    if (triunfo == 0) { 
+      if ($("#1").html() == $("#2").html() && $("#1").html() == $("#3").html() && $("#3").html() != "") {triunfo++;};
+      if ($("#4").html() == $("#5").html() && $("#4").html() == $("#6").html() && $("#6").html() != "") {triunfo++;};
+      if ($("#7").html() == $("#8").html() && $("#7").html() == $("#9").html() && $("#9").html() != "") {triunfo++;};
+      if ($("#1").html() == $("#4").html() && $("#1").html() == $("#7").html() && $("#7").html() != "") {triunfo++;};
+      if ($("#2").html() == $("#5").html() && $("#2").html() == $("#8").html() && $("#8").html() != "") {triunfo++;};
+      if ($("#3").html() == $("#6").html() && $("#3").html() == $("#9").html() && $("#9").html() != "") {triunfo++;};
+      if ($("#1").html() == $("#5").html() && $("#1").html() == $("#9").html() && $("#9").html() != "") {triunfo++;};
+      if ($("#3").html() == $("#5").html() && $("#3").html() == $("#7").html() && $("#7").html() != "") {triunfo++;};
+    }
+    if (triunfo > 0) {alert("Gano")};
+    if (array == "" && triunfo == 0) {alert("Empate")}; 
+  }
+</script>
