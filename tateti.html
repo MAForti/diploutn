@@ -3,14 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title></title>
     <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@3.5.1/dist/full.css"
       rel="stylesheet"
       type="text/css"
-      href="assets/boostrap/css/bootstrap.css"
     />
-    <script src="assets/jquery.js"></script>
-    <script src="assets/boostrap/js/bootstrap.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Tic Tac Toe</title>
   </head>
   <body>
     <!-- 
@@ -29,7 +28,6 @@
         background-color: #f2f2f2;
       }
       .grid {
-        display: grid;
         grid-template-columns: repeat(3, 100px);
         grid-gap: 2px;
       }
@@ -48,6 +46,24 @@
   </body>
 </html>
 <script>
+  /*
+
+  Cambios: 
+  
+  CSS 
+
+    Pase de usar Bootstrap a usar Tailwind
+
+  JS 
+
+    - Saque el JQuery y use JS Vanilla
+    - Cambie a usar una matriz de posibles victorias para no tener que usar tantos if
+    - Hice que se pueda especificar la cantidad de celdas 
+    (Habria que hacer que el css cambie sacando la raiz de la cantidad maxima de celdas, pero sera en un futuro jaja)
+    - Los elementos ahora se crean dinamicamente, para poder hacer los cambios desde uno solo y que apliquen a todos
+
+  */
+
   // Variables
 
   const board = document.querySelector("#board");
