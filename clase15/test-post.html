@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <script
+  src="https://code.jquery.com/jquery-3.7.0.js"
+  integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div>
+  <label>Email</label>
+  <input type="text" id="email">
+</div>
+<div>
+  <label>Contraseña</label>
+  <input type="text" id="password">
+</div>
+<button onclick="enviar()">Enviar</button>
+<script>
+function enviar() {
+  var varEmail = $("#email").val();
+  var varPassword = $("#password").val();
+  $.ajax({
+    // Endpoint a donde enviar
+    "url":"http://localhost:3000/login",
+
+    // Tipo de dato que se envia
+    "dataType":"json",
+
+    // Metodo que se usa para enviar
+    "type":"post",
+    
+    // Datos
+    "data":{
+      "email": varEmail,
+      "password": varPassword
+    },
+
+    "success":function(resultado) {
+      if (resultado.estado == "exito") {
+        location.href = "panel.html";
+      } else {
+        alert("La clave es incorrecta");
+      }
+    }
+  });
+}
+</script>
+</body>
+</html>
