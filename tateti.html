@@ -1,35 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="es" class="bg-zinc-950">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/daisyui@3.5.1/dist/full.css"
-      rel="stylesheet"
-      type="text/css"
-    />
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Tic Tac Toe</title>
   </head>
   <body>
-    <!-- 
-      Pase de ser una tabla predefinida a un grid que 
+    <div class="grain"></div>
+    <main class="prose mx-auto flex flex-col gap-10 justify-center items-center h-screen">
+
+      <h1 class="text-5xl font-bold transition-all ease-in-out cursor-default w-fit h-fit text-violet-800 hover:scale-105">Tic Tac Toe</h1>
+      <div id="buttons" class="flex flex-col"></div>
+      <div id="board" class="grid gap-[2px]"></div>
+    </main>
+    <!--
+      Pase de ser una tabla predefinida a un grid que
       se rellena con JS para poder poner ids dinamicas
     -->
-    <div id="board" class="grid"></div>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        background-color: #f2f2f2;
+
+.grain {
+		position: fixed;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+		pointer-events: none;
+		z-index: 49;
+		transform: translateZ(0);
+	}
+	.grain:before {
+		content: '';
+		top: -10rem;
+		left: -10rem;
+		width: calc(100% + 20rem);
+		height: calc(100% + 20rem);
+		z-index: 49;
+		position: fixed;
+    background-image: url('/noise.webp');
+		opacity: 0.05;
+		pointer-events: none;
+		-webkit-animation: noise 1s steps(2) infinite;
+		animation: noise 1s steps(2) infinite;
+	}
+      .button {
+        background-color: rgb(211, 34, 34);
+        padding: 0.5rem 1.5rem;
+        border-radius: 10px;
+        color: black;
+        font-weight: 500;
+        transition: all .2s ease-in-out;
+      }
+      .button:hover {
+        transform: scale(1.05);
+      }
+      .button:active {
+        transform: scale(.95);
       }
       .grid {
+        gap: 5px;
         grid-template-columns: repeat(3, 100px);
-        grid-gap: 2px;
       }
       .cell {
         display: flex;
@@ -38,107 +69,237 @@
         font-size: 24px;
         width: 100px;
         height: 100px;
-        background-color: white;
+        background-color: rgb(223, 223, 223);
         border: 1px solid #ccc;
+        color: black;
         cursor: pointer;
+        border-radius: 5px;
+        transition: all .35s ease-in-out;
+        transition: transform .1s ease-in-out;
       }
+      .cell:hover {
+        transform: scale(1.03);
+      }
+      .cell:active {
+        transform: scale(1);
+      }
+      .looser {
+        transition: all .2s ease-in-out;
+        opacity: 0.5;
+      }
+      .winner {
+        background: rgba(41, 211, 55, 0.849);
+        transition: all .2s ease-in-out;
+      }
+      .X::after {
+        content: "X";
+        color: rgba(0, 0, 0, 0.336);
+        transition: all .2s ease-in-out;
+      }
+      .O::after {
+        content: "O";
+        color: rgba(0, 0, 0, 0.336);
+        transition: all .2s ease-in-out;
+      }
+      [data-current="O"] {
+        color: #0004ff;
+        text-shadow:  rgba(0, 0, 0, 0.253) 0px 0px 5px;
+      }
+      [data-current="X"] {
+        color: #00c3ff;
+        text-shadow:  rgba(0, 0, 0, 0.253) 0px 0px 5px;
+      }
+
+      @-webkit-keyframes noise {
+		to {
+			transform: translate3d(-7rem, 0, 0);
+		}
+	}
+
+	@keyframes noise {
+		0% {
+			transform: translate3d(0, 9rem, 0);
+		}
+		10% {
+			transform: translate3d(-1rem, -4rem, 0);
+		}
+		20% {
+			transform: translate3d(-8rem, 2rem, 0);
+		}
+		30% {
+			transform: translate3d(9rem, -9rem, 0);
+		}
+		40% {
+			transform: translate3d(-2rem, 7rem, 0);
+		}
+		50% {
+			transform: translate3d(-9rem, -4rem, 0);
+		}
+		60% {
+			transform: translate3d(2rem, 6rem, 0);
+		}
+		70% {
+			transform: translate3d(7rem, -8rem, 0);
+		}
+		80% {
+			transform: translate3d(-9rem, 1rem, 0);
+		}
+		90% {
+			transform: translate3d(6rem, -5rem, 0);
+		}
+		to {
+			transform: translate3d(-7rem, 0, 0);
+		}
+	}
     </style>
+    <script>
+      /*
+
+      Cambios:
+
+      CSS
+
+        Pase de usar Bootstrap a usar Tailwind
+
+      JS
+
+        - Saque el JQuery y use JS Vanilla
+        - Cambie a usar una matriz de posibles victorias para no tener que usar tantos if
+        - Hice que se pueda especificar la cantidad de celdas
+        (Habria que hacer que el css cambie sacando la raiz de la cantidad maxima de celdas, pero sera en un futuro jaja)
+        - Los elementos ahora se crean dinamicamente, para poder hacer los cambios desde uno solo y que apliquen a todos
+
+      */
+
+      // Variables
+
+      const board = document.querySelector("#board");
+      const buttons = document.querySelector("#buttons")
+      const maxCells = 9;
+
+      let sel = [];
+      let player = "X";
+      let win = false;
+
+      // Crea la grilla
+
+      function init() {
+        board.innerHTML = ""
+        buttons.innerHTML = ""
+        sel = []
+        player = 'X'
+        win = false
+        for (let i = 0; i < maxCells; i++) {
+          // Creo el elemento, le asigno una clase, un id, y un eventlistener
+          let content = ""
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          cell.id = `${i}`;
+          cell.addEventListener("click", () => {
+            click(i);
+          });
+          cell.addEventListener('mouseover', () => {
+            if (!cell.textContent && !win) {
+              cell.classList.add(player)
+            }
+          });
+          cell.addEventListener('mouseout', () => {
+            cell.classList.remove(player)
+          });
+          // Inseto el elemento en el parent
+          board.appendChild(cell);
+          sel.push("");
+        }
+      }
+
+      // Comprueba si hay un ganador con una matriz de combinaciones predefinida
+      // Si es asi, devuelve el ganador
+
+      const handleWin = () => {
+        const combinations = [
+          // Filas
+          [0, 1, 2],
+          [3, 4, 5],
+          [6, 7, 8],
+          // Columnas
+          [0, 3, 6],
+          [1, 4, 7],
+          [2, 5, 8],
+          // Diagonales
+          [0, 4, 8],
+          [2, 4, 6],
+        ];
+
+        for (const comb of combinations) {
+          const [a, b, c] = comb;
+          // Si para la combinacion actual los 3 valores son iguales, es porque hay un ganador.
+          if (sel[a].player && sel[a].player === sel[b].player && sel[a].player === sel[c].player) {
+            return [sel[a], sel[b], sel[c]]; // Devuelvo el ganador
+          }
+        }
+
+        // Compruebo si el array se quedo sin valores, si no, devuelvo null
+        return !sel.includes("") ? "emp" : null;
+      };
+
+      const click = (i) => {
+        // Compruebo si el array se quedo sin espacios vacios y
+        // si es una victoria, si no, asigno el jugador actual
+        console.log(sel)
+
+        if (!sel[i] && !win) {
+          let el = document.getElementById(i)
+          sel[i] = {player, el};
+          document.getElementById(i).setAttribute("data-current", player)
+          document.getElementById(i).classList.remove(player)
+          document.getElementById(i).innerText = player;
+          const winner = handleWin();
+          if (winner) {
+            win = true;
+            if (winner === "emp") {
+              const button = document.createElement("button");
+              button.addEventListener('click', () => {
+                init()
+              })
+              button.className = "button";
+              button.innerText = "Reiniciar"
+              const text = document.createElement("p")
+              text.innerText = "Empate"
+              buttons.appendChild(text)
+              buttons.appendChild(button)
+              let loosers = document.querySelectorAll(".cell:not(.winner)")
+              console.log(loosers)
+              loosers.forEach(item => {
+                item.classList.add("looser")
+                item.style.pointerEvents = "none"
+              });
+            } else {
+              const button = document.createElement("button");
+              button.addEventListener('click', () => {
+                init()
+              })
+              button.className = "button";
+              button.innerText = "Reiniciar"
+              buttons.appendChild(button)
+              console.log(winner);
+              winner.forEach(item => {
+                item.el.classList.add('winner')
+                item.el.style.pointerEvents = "none"
+              });
+              let loosers = document.querySelectorAll(".cell:not(.winner)")
+              console.log(loosers)
+              loosers.forEach(item => {
+                item.classList.add("looser")
+                item.style.pointerEvents = "none"
+              });
+            }
+          } else {
+            player = player === "X" ? "O" : "X";
+          }
+        }
+      };
+
+      init();
+    </script>
   </body>
 </html>
-<script>
-  /*
-
-  Cambios: 
-  
-  CSS 
-
-    Pase de usar Bootstrap a usar Tailwind
-
-  JS 
-
-    - Saque el JQuery y use JS Vanilla
-    - Cambie a usar una matriz de posibles victorias para no tener que usar tantos if
-    - Hice que se pueda especificar la cantidad de celdas 
-    (Habria que hacer que el css cambie sacando la raiz de la cantidad maxima de celdas, pero sera en un futuro jaja)
-    - Los elementos ahora se crean dinamicamente, para poder hacer los cambios desde uno solo y que apliquen a todos
-
-  */
-
-  // Variables
-
-  const board = document.querySelector("#board");
-  const maxCells = 9;
-
-  let sel = [];
-  let player = "X";
-  let win = false;
-
-  // Crea la grilla
-
-  function init() {
-    for (let i = 0; i < maxCells; i++) {
-      // Creo el elemento, le asigno una clase, un id, y un eventlistener
-      const cell = document.createElement("div");
-      cell.className = "cell";
-      cell.id = `${i}`;
-      cell.addEventListener("click", () => {
-        click(i);
-      });
-      // Inseto el elemento en el parent
-      board.appendChild(cell);
-      sel.push("");
-    }
-  }
-
-  // Comprueba si hay un ganador con una matriz de combinaciones predefinida
-  // Si es asi, devuelve el ganador
-
-  const handleWin = () => {
-    const combinations = [
-      // Filas
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      // Columnas
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      // Diagonales
-      [0, 4, 8],
-      [2, 4, 6],
-    ];
-
-    for (const comb of combinations) {
-      const [a, b, c] = comb;
-      // Si para la combinacion actual los 3 valores son iguales, es porque hay un ganador.
-      if (sel[a] && sel[a] === sel[b] && sel[a] === sel[c]) {
-        return sel[a]; // Devuelvo el ganador
-      }
-    }
-
-    // Compruebo si el array se quedo sin valores, si no, devuelvo null
-    return !sel.includes("") ? "emp" : null;
-  };
-
-  const click = (i) => {
-    // Compruebo si el array se quedo sin espacios vacios y
-    // si es una victoria, si no, asigno el jugador actual
-    if (!sel[i] && !win) {
-      sel[i] = player;
-      document.getElementById(i).innerText = player;
-      const winner = handleWin();
-      if (winner) {
-        win = true;
-        if (winner === "emp") {
-          console.log("empate");
-        } else {
-          console.log(`gano ${winner}`);
-        }
-      } else {
-        player = player === "X" ? "O" : "X";
-      }
-    }
-  };
-
-  init();
-</script>
